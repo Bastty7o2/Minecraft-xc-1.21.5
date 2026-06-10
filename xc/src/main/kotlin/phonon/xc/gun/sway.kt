@@ -49,7 +49,7 @@ public fun XC.calculateSway(
     player.getVehicle()?.let { mount ->
         if ( mount.type == EntityType.ARMOR_STAND ) {
             sway *= gun.swayRideArmorStand
-        } else if ( mount.type == EntityType.BOAT ) {
+        } else if ( mount.type == EntityType.OAK_BOAT ) {
             sway *= gun.swayRideBoat
         } else { // apply horse modifier (generic entity mount)
             sway *= gun.swayRideHorse
@@ -138,12 +138,17 @@ internal class TaskCalculatePlayerSpeed(
         for ( player in players ) {
             val currLoc = player.getLocation()
             val currSpeed = oldPlayerLocations[player.uniqueId]?.let { oldLoc ->
+                if (oldLoc.world != currLoc.world) {
+                    0.0
+                } else {
+                    (currLoc.distance(oldLoc) / dt).coerceIn(0.0, maxSpeed)
+                }
+            } ?: 0.0
                 // we clamp speed within [0.0, 20.0] so that if player
                 // teleports large distance (e.g. warp or respawn), this won't
                 // spike speed for too long. 20.0 is chosen since max horse speed
                 // is ~15 blocks/s, so this is slightly faster than that.
-                (currLoc.distance(oldLoc) / dt).coerceIn(0.0, maxSpeed)
-            } ?: 0.0
+
             val oldSpeed = oldPlayerSpeeds[player.uniqueId] ?: 0.0
 
             // moving average of speed

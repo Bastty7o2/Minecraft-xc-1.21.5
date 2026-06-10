@@ -227,7 +227,7 @@ public data class Gun(
     public val projectileDamageDropDistance: Double = 0.0,
 
     // projectile particle config
-    public val projectileParticleType: Particle = Particle.REDSTONE,
+    public val projectileParticleType: Particle = Particle.DUST,
     public val projectileParticleSize: Float = 0.35f,
     public val projectileParticleColor: Color = Color.WHITE,
     public val projectileParticleSpacing: Double = 1.5,
@@ -409,7 +409,7 @@ public data class Gun(
         itemMeta.setLore(itemDescription.toList())
 
         // add item cooldown
-        itemMeta.addAttributeModifier(Attribute.GENERIC_ATTACK_SPEED, this.attackSpeedAttributeModifier)
+        itemMeta.addAttributeModifier(Attribute.ATTACK_SPEED, this.attackSpeedAttributeModifier)
 
         item.setItemMeta(itemMeta)
 
@@ -624,9 +624,9 @@ public data class Gun(
                             Particle.valueOf(ty)
                         } catch ( err: Exception ) {
                             err.printStackTrace()
-                            Particle.EXPLOSION_NORMAL
+                            Particle.POOF
                         }
-                    } ?: Particle.EXPLOSION_NORMAL
+                    } ?: Particle.POOF
                     val count = particles.getLong("count")?.toInt() ?: 6
                     val randomX = particles.getDouble("random_x") ?: 0.25
                     val randomY = particles.getDouble("random_y") ?: 0.25
@@ -669,9 +669,9 @@ public data class Gun(
                             Particle.valueOf(ty)
                         } catch ( err: Exception ) {
                             err.printStackTrace()
-                            Particle.EXPLOSION_LARGE
+                            Particle.EXPLOSION
                         }
-                    } ?: Particle.EXPLOSION_LARGE
+                    } ?: Particle.EXPLOSION
                     val count = particles.getLong("count")?.toInt() ?: 1
                     val randomX = particles.getDouble("random_x") ?: 0.0
                     val randomY = particles.getDouble("random_y") ?: 0.0

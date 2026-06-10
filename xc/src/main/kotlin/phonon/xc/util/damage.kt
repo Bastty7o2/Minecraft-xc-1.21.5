@@ -80,7 +80,7 @@ public fun XC.damageAfterArmorAndResistance(
 
     // get total entity armor value
     // note: LivingEntity extends Attributable, so attribute should always exist
-    val armor = entity.getAttribute(Attribute.GENERIC_ARMOR)?.getValue() ?: 0.0
+    val armor = entity.getAttribute(Attribute.ARMOR)?.getValue() ?: 0.0
 
     // get custom vehicle armor
     val vehicle = entity.getVehicle()
@@ -130,7 +130,7 @@ public fun XC.explosionDamageAfterArmor(
 
     // get total entity armor value
     // note: LivingEntity extends Attributable, so attribute should always exist
-    val armor = entity.getAttribute(Attribute.GENERIC_ARMOR)?.getValue() ?: 0.0
+    val armor = entity.getAttribute(Attribute.ARMOR)?.getValue() ?: 0.0
 
     // get custom vehicle armor
     val vehicle = entity.getVehicle()
@@ -144,10 +144,10 @@ public fun XC.explosionDamageAfterArmor(
 
     val equipment = entity.getEquipment()
     if ( equipment != null ) {
-        equipment.getHelmet()?.getItemMeta()?.let { it -> totalBlastProtectionLevel += it.getEnchantLevel(Enchantment.PROTECTION_EXPLOSIONS).toDouble() }
-        equipment.getChestplate()?.getItemMeta()?.let { it -> totalBlastProtectionLevel += it.getEnchantLevel(Enchantment.PROTECTION_EXPLOSIONS).toDouble() }
-        equipment.getLeggings()?.getItemMeta()?.let { it -> totalBlastProtectionLevel += it.getEnchantLevel(Enchantment.PROTECTION_EXPLOSIONS).toDouble() }
-        equipment.getBoots()?.getItemMeta()?.let { it -> totalBlastProtectionLevel += it.getEnchantLevel(Enchantment.PROTECTION_EXPLOSIONS).toDouble() }
+        equipment.getHelmet()?.getItemMeta()?.let { it -> totalBlastProtectionLevel += it.getEnchantLevel(Enchantment.BLAST_PROTECTION).toDouble() }
+        equipment.getChestplate()?.getItemMeta()?.let { it -> totalBlastProtectionLevel += it.getEnchantLevel(Enchantment.BLAST_PROTECTION).toDouble() }
+        equipment.getLeggings()?.getItemMeta()?.let { it -> totalBlastProtectionLevel += it.getEnchantLevel(Enchantment.BLAST_PROTECTION).toDouble() }
+        equipment.getBoots()?.getItemMeta()?.let { it -> totalBlastProtectionLevel += it.getEnchantLevel(Enchantment.BLAST_PROTECTION).toDouble() }
     }
 
     // if applying vehicle armor, make minimum damage 0.0 (no damage)

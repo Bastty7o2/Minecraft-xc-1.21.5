@@ -806,7 +806,7 @@ public class EventListener(
                 // if player swimming and has NO JUMP effect, assume this is a
                 // crawl fall damage event bug, and cancel damage
                 if ( player.isSwimming() ) {
-                    val noJumpEffect = player.getPotionEffect(PotionEffectType.JUMP)
+                    val noJumpEffect = player.getPotionEffect(PotionEffectType.JUMP_BOOST)
                     if ( noJumpEffect != null && noJumpEffect.getAmplifier() == -128 ) {
                         // println("CANCEL FALL DAMAGE")
                         e.setCancelled(true)

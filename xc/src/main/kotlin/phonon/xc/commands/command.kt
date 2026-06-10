@@ -18,6 +18,7 @@ import phonon.xc.gun.crawl.CrawlStart
 import phonon.xc.util.Message
 import phonon.xc.util.CustomItemGui
 import phonon.xc.util.createCustomItemGui
+import org.bukkit.inventory.ItemStack
 
 
 private val SUBCOMMANDS = listOf(
@@ -85,7 +86,7 @@ public class Command(
         if ( args.size > 1 ) {
             // handle specific subcommands
             when ( args[0].lowercase() ) {
-                "browse" -> return listOf("ammo", "gun", "hat", "melee", "throwable")
+                "browse" -> return listOf("ammo", "gun", "hat", "melee", "throwable", "landmine")
             }
         }
 
@@ -117,47 +118,55 @@ public class Command(
         }
     }
 
-    private fun browse(sender: CommandSender?, args: Array<String>) {
-        val player = if ( sender is Player ) sender else null
-        if ( player === null ) {
-            // TODO: CONSOLE FORMAT: RUN /xc list [type] INSTEAD
-            Message.error(sender, "[xc] Only players ingame can use /xc browse")
-            return
-        }
-
-        if ( args.size < 2 ) {
-            Message.error(sender, "[xc] /xc browse [ammo|gun|hat|melee|throwable] [page]")
-            return
-        }
-
-        // parse third arg as "page number", which is base index
-        // in item ids to start at. for user command parsing,
-        // let page start at 1 (not 0), but internally page is 0 indexed.
-        // so subtract 1
-        val page = if ( args.size > 2 ) {
-            (args[2].toIntOrNull() ?: 1) - 1
-        } else {
-            0
-        }
-
-        if ( page < 0 ) {
-            Message.error(sender, "Page must be >= 1.")
-            return
-        }
-
-        val type = args[1].lowercase()
-        when ( type ) {
-            "ammo" -> player.openInventory(xc.createCustomItemGui("Ammo", xc.storage.ammoIds, xc.storage.ammo, page).getInventory())
-            "gun" -> player.openInventory(xc.createCustomItemGui("Gun", xc.storage.gunIds, xc.storage.gun, page).getInventory())
-            "hat" -> player.openInventory(xc.createCustomItemGui("Hat", xc.storage.hatIds, xc.storage.hat, page).getInventory())
-            "melee" -> player.openInventory(xc.createCustomItemGui("Melee", xc.storage.meleeIds, xc.storage.melee, page).getInventory())
-            "throwable" -> player.openInventory(xc.createCustomItemGui("Throwable", xc.storage.throwableIds, xc.storage.throwable, page).getInventory())
-            else -> {
-                Message.error(sender, "[xc] Invalid $type: /xc browse [ammo|gun|hat|melee|throwable] [page]")
-            }
-        }
+private fun browse(sender: CommandSender?, args: Array<String>) {
+    val player = if ( sender is Player ) sender else null
+    if ( player === null ) {
+        Message.error(sender, "[xc] Only players ingame can use /xc browse")
+        return
     }
 
+    if ( args.size < 2 ) {
+        Message.error(sender, "[xc] /xc browse [ammo|gun|hat|melee|throwable|landmine] [page]")
+        return
+    }
+
+    val page = if ( args.size > 2 ) {
+        (args[2].toIntOrNull() ?: 1) - 1
+    } else {
+        0
+    }
+
+    if ( page < 0 ) {
+        Message.error(sender, "Page must be >= 1.")
+        return
+    }
+
+    val type = args[1].lowercase()
+    when ( type ) {
+        "ammo" -> player.openInventory(xc.createCustomItemGui("Ammo", xc.storage.ammoIds, xc.storage.ammo, page).getInventory())
+        "gun" -> player.openInventory(xc.createCustomItemGui("Gun", xc.storage.gunIds, xc.storage.gun, page).getInventory())
+        "hat" -> player.openInventory(xc.createCustomItemGui("Hat", xc.storage.hatIds, xc.storage.hat, page).getInventory())
+        "melee" -> player.openInventory(xc.createCustomItemGui("Melee", xc.storage.meleeIds, xc.storage.melee, page).getInventory())
+        "throwable" -> player.openInventory(xc.createCustomItemGui("Throwable", xc.storage.throwableIds, xc.storage.throwable, page).getInventory())
+
+        "landmine" -> {
+            val inv = Bukkit.createInventory(null, 54, "XC Landmines")
+
+            var slot = 0
+            for ( landmine in xc.storage.landmine.values ) {
+                if ( slot >= inv.size ) break
+                inv.setItem(slot, landmine.toItemStack(xc))
+                slot++
+            }
+
+            player.openInventory(inv)
+        }
+
+        else -> {
+            Message.error(sender, "[xc] Invalid $type: /xc browse [ammo|gun|hat|melee|throwable|landmine] [page]")
+        }
+    }
+}
     /**
      * Print engine timings to sender
      */

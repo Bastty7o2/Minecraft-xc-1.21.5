@@ -387,7 +387,7 @@ public class XC(
         for ( (_playerId, crawlState) in crawling ) {
             try {
                 crawlState.cleanup()
-                crawlState.player.removePotionEffect(PotionEffectType.JUMP)
+                crawlState.player.removePotionEffect(PotionEffectType.JUMP_BOOST)
                 crawlState.player.setWalkSpeed(0.2f) // default speed
             } catch (e: Exception) {
                 e.printStackTrace()
@@ -706,7 +706,7 @@ public class XC(
             // model ids are valid, now map each id => object
             hats[modelId]?.let { old -> logger.warning("Hat ${item.itemName} (${modelId}) overwrites ${old.itemName}") }
             hats[modelId] = item
-            validHatIds.add(item.id)
+            validHatIds.add(modelId)
         }
 
         // add landmines to enum map
@@ -1149,14 +1149,14 @@ public class XC(
                         if ( entity.type == EntityType.ARMOR_STAND ) {
                             val hitboxSize = customModelHitboxes.get(entity.getUniqueId())
                             if ( hitboxSize != null ) {
-                                Hitbox.from(entity, hitboxSize).visualize(world, Particle.VILLAGER_HAPPY)
+                                Hitbox.from(entity, hitboxSize).visualize(world, Particle.HAPPY_VILLAGER)
                                 continue
                             }
                         }
         
                         // regular entities
                         if ( config.entityTargetable[entity.type] ) {
-                            Hitbox.from(entity, config.entityHitboxSizes[entity.type]).visualize(world, Particle.VILLAGER_HAPPY)
+                            Hitbox.from(entity, config.entityHitboxSizes[entity.type]).visualize(world, Particle.HAPPY_VILLAGER)
                         }
                     }
                 }
@@ -1494,7 +1494,7 @@ public class XC(
                 plugin,
                 TaskAmmoInfoMessages(gunAmmoInfoMessages),
             )
-            Bukkit.getScheduler().runTaskAsynchronously(
+            Bukkit.getScheduler().runTask(
                 plugin,
                 TaskSounds(soundPackets),
             )

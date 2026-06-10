@@ -1,9 +1,0 @@
-# Ammo id. This is the ammo custom model data.
-id = 411
-
-# Item properties
-[item]
-name = "Armor Piercing Shell"
-lore = [
-    "High damage against armored vehicles.",
-]

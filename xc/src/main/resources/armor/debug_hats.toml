@@ -11,14 +11,12 @@ model = 20
 armor = 2.0
 name = "Blahaj"
 lore = [
-    "trans rights r human rights",
     ">,<",
 ]
 
 # optional enchants
 [hat.enchants]
-protection = 1
-respiration = 2
+
 
 
 # HAT BLOCK 2

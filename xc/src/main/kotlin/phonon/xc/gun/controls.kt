@@ -255,8 +255,8 @@ private fun XC.cleanupGunMeta(
 
     // SET GUN ATTACK SPEED SETTING
     // (to match gun shoot delay)
-    itemMeta.removeAttributeModifier(Attribute.GENERIC_ATTACK_SPEED)
-    itemMeta.addAttributeModifier(Attribute.GENERIC_ATTACK_SPEED, gun.attackSpeedAttributeModifier)
+    itemMeta.removeAttributeModifier(Attribute.ATTACK_SPEED)
+    itemMeta.addAttributeModifier(Attribute.ATTACK_SPEED, gun.attackSpeedAttributeModifier)
 
     return setGunItemMetaModel(itemMeta, gun, ammoCurrent, aimdownsights)
 }
@@ -392,13 +392,25 @@ internal fun XC.gunAimDownSightsSystem(
                 if ( ammo > 0 ) {
                     val isShift = player.isSneaking()
         
-                    if ( isShift ) {
-                        itemMeta.setCustomModelData(gun.itemModelAimDownSights)
+                val currentModel = if (itemMeta.hasCustomModelData()) {
+                    itemMeta.customModelData
+                } else {
+                    -1
+                }
+
+                if ( isShift ) {
+                    itemMeta = setGunItemMetaModel(itemMeta, gun, ammo, true)
+
+                    if ( currentModel != gun.itemModelAimDownSights ) {
                         this.createAimDownSightsOffhandModel(gun, player)
-                    } else {
-                        itemMeta.setCustomModelData(gun.itemModelDefault)
+                    }
+                } else {
+                    itemMeta = setGunItemMetaModel(itemMeta, gun, ammo, false)
+
+                    if ( currentModel == gun.itemModelAimDownSights ) {
                         this.removeAimDownSightsOffhandModel(player)
                     }
+                }
         
                     item.setItemMeta(itemMeta)
                     equipment.setItem(inventorySlot, item)
@@ -1795,20 +1807,21 @@ private fun inventoryRemoveItem(
                 var amountToRemove = amount
 
                 for ( i in indicesToRemove ) {
-                    val item = items[i]
-                    val itemAmount = item.getAmount()           
-                    if ( itemAmount > amountToRemove ) {
-                        item.setAmount(itemAmount - amountToRemove)
-                        inventory.setItem(i, item)
-                        break
-                    } else {
-                        inventory.setItem(i, null)
-                        amountToRemove -= itemAmount
-                        if ( amountToRemove <= 0 ) {
-                            break
-                        }
-                    }
-                }
+    val item = items[i] ?: continue
+    val itemAmount = item.amount
+
+    if ( itemAmount > amountToRemove ) {
+        item.amount = itemAmount - amountToRemove
+        inventory.setItem(i, item)
+        break
+    } else {
+        inventory.setItem(i, null)
+        amountToRemove -= itemAmount
+        if ( amountToRemove <= 0 ) {
+            break
+        }
+    }
+}
 
                 return true
             }
@@ -1828,29 +1841,8 @@ private fun XC.doRecoil(
     recoilVertical: Double,
     recoilRamp: Double,
 ) {
-    val playerId = player.getUniqueId()
+    val newYaw = player.location.yaw + recoilHorizontal.toFloat()
+    val newPitch = (player.location.pitch - recoilVertical.toFloat()).coerceIn(-90f, 90f)
 
-    // ramp player recoil rate
-    val currRecoilMultiplier = this.playerRecoil[playerId] ?: 0.0
-    val newRecoilMultiplier = min(1.0, currRecoilMultiplier + recoilRamp)
-    this.playerRecoil[playerId] = newRecoilMultiplier
-
-    // needed for adjusting recoil when player riding an entity
-    // these are experimentally measured in game
-    var isInVehicle = false
-    var mountOffsetY = 0.0
-    player.getVehicle()?.let { v ->
-        isInVehicle = true
-        mountOffsetY = entityMountEyeHeightOffset(v.type)
-    }
-
-    // recoil handling:
-    this.recoilQueue.add(RecoilPacket(
-        player = player,
-        isInVehicle = isInVehicle,
-        mountOffsetY = mountOffsetY,
-        recoilVertical = recoilVertical,
-        recoilHorizontal = recoilHorizontal,
-        multiplier = newRecoilMultiplier,
-    ))
+    player.setRotation(newYaw, newPitch)
 }

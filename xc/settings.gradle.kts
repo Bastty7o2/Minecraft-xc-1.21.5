@@ -15,8 +15,9 @@ pluginManagement {
 
     plugins {
         // Apply the Kotlin JVM plugin to add support for Kotlin.
-        id("org.jetbrains.kotlin.jvm") version "1.6.10"
-        id("com.github.johnrengelman.shadow") version "7.1.2"
+        id("org.jetbrains.kotlin.jvm") version "2.0.21"
+        id("com.github.johnrengelman.shadow") version "8.1.1"
+        id("io.papermc.paperweight.userdev") version "2.0.0-beta.17"
         // maven() // no longer needed in gradle 7
         
         // include paperweight, but DO NOT APPLY BY DEFAULT...
@@ -33,8 +34,7 @@ pluginManagement {
         // USE FOR 1.16.5, UNCOMMENT WHEN NEEDED :^(
         // id("io.papermc.paperweight.userdev") version "1.3.8" apply false
         
-        // USE FOR 1.18.2 (DEFAULT)
-        id("io.papermc.paperweight.userdev") version "1.3.8"
+
 
         // maven() // no longer needed in gradle 7
     }

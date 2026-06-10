@@ -59,7 +59,7 @@ public data class Hat(
             AttributeModifier.Operation.ADD_NUMBER,
             EquipmentSlot.HEAD,
         )
-        itemMeta.addAttributeModifier(Attribute.GENERIC_ARMOR, modifier)
+        itemMeta.addAttributeModifier(Attribute.ARMOR, modifier)
         
         itemMeta.removeItemFlags(ItemFlag.HIDE_ATTRIBUTES)
 

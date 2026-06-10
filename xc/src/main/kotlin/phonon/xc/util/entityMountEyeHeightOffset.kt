@@ -17,7 +17,7 @@ import org.bukkit.entity.EntityType
 public fun entityMountEyeHeightOffset(type: EntityType): Double {
     return when ( type ) {
         EntityType.HORSE -> 0.85 // == horse mount height
-        EntityType.BOAT -> -0.45 // == boat mount height offset?
+        EntityType.OAK_BOAT -> -0.45 // == boat mount height offset?
         // EntityType.ARMOR_STAND -> 1.75 // TODO...idk how to manage across vehicles
         EntityType.ARMOR_STAND -> 0.0 // TODO...for now, zero marker height armorstands need no adjustment
         else -> 1.0 // TODO

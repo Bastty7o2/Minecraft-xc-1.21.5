@@ -13,7 +13,7 @@ import io.papermc.paperweight.tasks.RemapJar
 version = "0.0.4"
 
 // base of output jar name
-val OUTPUT_JAR_NAME = "xc"
+val OUTPUT_JAR_NAME = "bc"
 
 // target will be set to minecraft version by cli input parameter
 var target = ""
@@ -79,23 +79,18 @@ dependencies {
     // Align versions of all Kotlin components
     compileOnly(platform("org.jetbrains.kotlin:kotlin-bom"))
 
-    // Use the Kotlin JDK 8 standard library.
+    // Kotlin runtime - compileOnly for building, resolvableImplementation for shadow jar
     compileOnly("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
-    // uncomment to shadow into jar
-    // configurations["resolvableImplementation"]("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
+    configurations["resolvableImplementation"]("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
 
     // Kotlin reflect api
     compileOnly("org.jetbrains.kotlin:kotlin-reflect")
-    // uncomment to shadow into jar
-    // configurations["resolvableImplementation"]("org.jetbrains.kotlin:kotlin-reflect")
-    
+    configurations["resolvableImplementation"]("org.jetbrains.kotlin:kotlin-reflect")
+
     // toml parsing library
     compileOnly("org.tomlj:tomlj:1.1.0")
     configurations["resolvableImplementation"]("org.tomlj:tomlj:1.1.0")
 
-    // paper api
-    // api("com.destroystokyo.paper:paper-api:1.16.5-R0.1-SNAPSHOT")
-    
     // world guard region protection
     compileOnly("com.sk89q.worldguard:worldguard-bukkit:7.0.7")
 
@@ -106,34 +101,20 @@ dependencies {
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit")
 
     // MINECRAFT VERSION SPECIFIC BUILD CONFIGURATION
-    if ( project.hasProperty("1.16") == true ) {
-        java.toolchain.languageVersion.set(JavaLanguageVersion.of(16)) // need java==16 for 1.16.5
+    if (project.hasProperty("1.16") == true) {
+        java.toolchain.languageVersion.set(JavaLanguageVersion.of(16))
         sourceSets["main"].java.srcDir("src/nms/v1_16_R3")
-        // compileOnly(files("./lib/craftbukkit-1.16.5.jar"))
         compileOnly(files("./lib/spigot-1.16.5.jar"))
         configurations["compileOnlyPriority"]("com.destroystokyo.paper:paper-api:1.16.5-R0.1-SNAPSHOT")
         target = "1.16.5"
-    }
-    else if ( project.hasProperty("1.18") == true ) {
-        java.toolchain.languageVersion.set(JavaLanguageVersion.of(17)) // need java==17 for 1.18.2
-        sourceSets["main"].java.srcDir("src/nms/v1_18_R2")
-        // apply<PaperweightUser>() // applies the paper weight plugin for minecraft nms classes
-        paperDevBundle("1.18.2-R0.1-SNAPSHOT") // contains 1.18.2 nms classes
-        compileOnly("io.papermc.paper:paper-api:1.18.2-R0.1-SNAPSHOT")
-        target = "1.18.2"
+    } else {
+        java.toolchain.languageVersion.set(JavaLanguageVersion.of(21))
+        sourceSets["main"].java.srcDir("src/nms/v1_21_R4")
 
-        tasks {
-            assemble {
-                // must write it like below because in 1.16 config, reobfJar does not exist
-                // so the simpler definition below wont compile
-                // dependsOn(reobfJar) // won't compile :^(
-                dependsOn(project.tasks.first { it.name.contains("reobfJar") })
-            }
-        }
+        paperweight.paperDevBundle("1.21.5-R0.1-SNAPSHOT")
+        compileOnly("io.papermc.paper:paper-api:1.21.5-R0.1-SNAPSHOT")
 
-        tasks.named("reobfJar") {
-            base.archivesBaseName = "${OUTPUT_JAR_NAME}-${target}-SNAPSHOT"
-        }
+        target = "1.21.5"
     }
 }
 
@@ -145,13 +126,13 @@ tasks {
     named<ShadowJar>("shadowJar") {
         // verify valid target minecraft version
         doFirst {
-            val supportedMinecraftVersions = setOf("1.16.5", "1.18.2")
+            val supportedMinecraftVersions = setOf("1.16.5", "1.18.2", "1.21.5")
             if ( !supportedMinecraftVersions.contains(target) ) {
                 throw Exception("Invalid Minecraft version! Supported versions are: 1.16, 1.18")
             }
         }
 
-        classifier = ""
+        archiveClassifier.set("all")
         configurations = mutableListOf(project.configurations.named("resolvableImplementation").get()) as List<FileCollection>
     }
 }
@@ -169,14 +150,8 @@ tasks {
 gradle.taskGraph.whenReady {
     tasks {
         named<ShadowJar>("shadowJar") {
-            if ( hasTask(":release") ) {
-                baseName = "${OUTPUT_JAR_NAME}-${target}"
-                // minimize() // FOR PRODUCTION USE MINIMIZE
-            }
-            else {
-                baseName = "${OUTPUT_JAR_NAME}-${target}-SNAPSHOT"
-                // minimize() // FOR PRODUCTION USE MINIMIZE
-            }
+            archiveBaseName.set("${OUTPUT_JAR_NAME}-${target}-SNAPSHOT")
+            // minimize()
         }
     }
 }

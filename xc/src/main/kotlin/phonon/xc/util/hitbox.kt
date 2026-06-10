@@ -326,7 +326,7 @@ public data class Hitbox(
             map[EntityType.PIG] = HitboxSize(0.55f, 0.55f, 1.0f, -0.1f)
             map[EntityType.SHEEP] = HitboxSize(0.55f, 0.55f, 1.4f, -0.1f)
             map[EntityType.COW] = HitboxSize(0.55f, 0.55f, 1.5f, -0.1f)
-            map[EntityType.MUSHROOM_COW] = HitboxSize(0.55f, 0.55f, 1.5f, -0.1f)
+            map[EntityType.MOOSHROOM] = HitboxSize(0.55f, 0.55f, 1.5f, -0.1f)
             map[EntityType.CHICKEN] = HitboxSize(0.3f, 0.3f, 0.8f, -0.1f)
             map[EntityType.SQUID] = HitboxSize(0.5f, 0.5f, 0.9f, -0.1f)
             map[EntityType.CAT] = HitboxSize(0.4f, 0.4f, 0.8f, -0.1f)
@@ -337,7 +337,7 @@ public data class Hitbox(
             map[EntityType.WANDERING_TRADER] = HitboxSize(0.4f, 0.4f, 2.05f, -0.1f)
             map[EntityType.TRADER_LLAMA] = HitboxSize(0.55f, 0.55f, 1.97f, -0.1f)
             map[EntityType.LLAMA] = HitboxSize(0.55f, 0.55f, 1.97f, -0.1f)
-            map[EntityType.SNOWMAN] = HitboxSize(0.45f, 0.45f, 2.0f, -0.1f)
+            map[EntityType.SNOW_GOLEM] = HitboxSize(0.45f, 0.45f, 2.0f, -0.1f)
             map[EntityType.BEE] = HitboxSize(0.45f, 0.45f, 0.7f, -0.1f)
             map[EntityType.PARROT] = HitboxSize(0.35f, 0.35f, 1.0f, -0.1f)
             map[EntityType.FOX] = HitboxSize(0.4f, 0.4f, 0.8f, -0.1f)
@@ -397,15 +397,15 @@ public data class Hitbox(
 
             // non-living entities
             map[EntityType.ARMOR_STAND] = HitboxSize(0.35f, 0.35f, 2.1f, -0.1f)
-            map[EntityType.BOAT] = HitboxSize(0.65f, 0.65f, 0.6f, -0.1f)
+            map[EntityType.OAK_BOAT] = HitboxSize(0.65f, 0.65f, 0.6f, -0.1f)
             map[EntityType.MINECART] = HitboxSize(0.5f, 0.5f, 0.8f, -0.1f)
-            map[EntityType.MINECART_CHEST] = HitboxSize(0.5f, 0.5f, 0.8f, -0.1f)
-            map[EntityType.MINECART_FURNACE] = HitboxSize(0.5f, 0.5f, 0.8f, -0.1f)
-            map[EntityType.MINECART_COMMAND] = HitboxSize(0.5f, 0.5f, 0.8f, -0.1f)
-            map[EntityType.MINECART_TNT] = HitboxSize(0.5f, 0.5f, 0.8f, -0.1f)
-            map[EntityType.MINECART_HOPPER] = HitboxSize(0.5f, 0.5f, 0.8f, -0.1f)
-            map[EntityType.MINECART_MOB_SPAWNER] = HitboxSize(0.5f, 0.5f, 0.8f, -0.1f)
-            map[EntityType.ENDER_CRYSTAL] = HitboxSize(1.1f, 1.1f, 2.1f, -0.1f)
+            map[EntityType.CHEST_MINECART] = HitboxSize(0.5f, 0.5f, 0.8f, -0.1f)
+            map[EntityType.FURNACE_MINECART] = HitboxSize(0.5f, 0.5f, 0.8f, -0.1f)
+            map[EntityType.COMMAND_BLOCK_MINECART] = HitboxSize(0.5f, 0.5f, 0.8f, -0.1f)
+            map[EntityType.TNT_MINECART] = HitboxSize(0.5f, 0.5f, 0.8f, -0.1f)
+            map[EntityType.HOPPER_MINECART] = HitboxSize(0.5f, 0.5f, 0.8f, -0.1f)
+            map[EntityType.SPAWNER_MINECART] = HitboxSize(0.5f, 0.5f, 0.8f, -0.1f)
+            map[EntityType.END_CRYSTAL] = HitboxSize(1.1f, 1.1f, 2.1f, -0.1f)
             
             // ignored, but here for reference
             // map[EntityType.EGG] = HitboxSize(0.225f, 0.225f, 0.35f, -0.1f)
@@ -443,14 +443,14 @@ public data class Hitbox(
             val map = EnumArrayMap.from<EntityType, Boolean>({type -> type.isAlive()})
 
             // insert specific non-living entities
-            map[EntityType.BOAT] = true
+            map[EntityType.OAK_BOAT] = true
             map[EntityType.MINECART] = true
-            map[EntityType.MINECART_CHEST] = true
-            map[EntityType.MINECART_FURNACE] = true
-            map[EntityType.MINECART_COMMAND] = true
-            map[EntityType.MINECART_TNT] = true
-            map[EntityType.MINECART_HOPPER] = true
-            map[EntityType.MINECART_MOB_SPAWNER] = true
+            map[EntityType.CHEST_MINECART] = true
+            map[EntityType.FURNACE_MINECART] = true
+            map[EntityType.COMMAND_BLOCK_MINECART] = true
+            map[EntityType.TNT_MINECART] = true
+            map[EntityType.HOPPER_MINECART] = true
+            map[EntityType.SPAWNER_MINECART] = true
             
             // disable, since armor stands used as decoration or custom vehicles
             map[EntityType.ARMOR_STAND] = false
@@ -459,7 +459,7 @@ public data class Hitbox(
             map[EntityType.ITEM_FRAME] = false
 
             // maybe?
-            // map[EntityType.ENDER_CRYSTAL] = true
+            // map[EntityType.END_CRYSTAL] = true
 
             return map
         }
